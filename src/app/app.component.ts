@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+// @Component a typescript decorator
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

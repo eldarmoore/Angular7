@@ -4,21 +4,26 @@
     <!-- Friendly Player Stats -->
     <div class="col-md-3" style="background-color: #E3EBFD; height: 500px">
       <h2>Power A</h2>
-      <p>Health: <b>{{ friendlyCurrentHealth }} / {{ friendlyHealth }}</b></p>
-      <p>Attack: <b>{{ friendlyMinAttack }} - {{ friendlyMaxAttack }}</b></p>
+
+      <!-- HEALTH BAR -->
       <div class="progress">
-        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
+        <div class="progress-bar {{ progressBar(prstHealth(friendlyHealth, friendlyCurrentHealth)) }}" role="progressbar" aria-valuenow="40"
              aria-valuemin="0" aria-valuemax="100" [style.width.%]="prstHealth(friendlyHealth, friendlyCurrentHealth)">
-          <span class="progress-text">{{ prstHealth(friendlyHealth, friendlyCurrentHealth) }}%</span>
+          <!--<span class="progress-text">{{ prstHealth(friendlyHealth, friendlyCurrentHealth) }}%</span>-->
+          <span class="progress-text">{{ friendlyCurrentHealth }} / {{ friendlyHealth }}</span>
         </div>
       </div>
+      <!-- END - HEALTH BAR -->
+      <p>Attack:  <b>{{ friendlyMinAttack }} - {{ friendlyMaxAttack }}</b></p>
+      <p>Crit:    <b>{{ friendlyCrit }}%</b></p>
+
     </div>
 
     <!-- Center -->
     <div class="col-md-6">
-      <button class="btn btn-primary" (click)="onFight()">Fight</button>
-      <p>{{ status }}</p>
-      <button class="btn bg-info" (click)="resetStats()">Reset</button>
+      <button class="btn btn-primary col-md-12" (click)="onFight()">Fight</button>
+      <p style="height: 50px">{{ status }}</p>
+      <button class="btn bg-info col-md-12" (click)="resetStats()">Reset</button>
       <div class="row">
         <div class="col-md-6">
           <p *ngFor="let log of friendlyCombatLog">Friendly hits Enemy for <span style="color: blue;">{{ log }}</span></p>
@@ -32,14 +37,20 @@
     <!-- Target Stats -->
     <div class="col-md-3" style="background-color: #E3EBFD; height: 500px">
       <h2>Power B</h2>
-      <p>Health: {{ enemyCurrentHealth }} / {{ friendlyHealth }}</p>
-      <p>Attack: {{ enemyMinAttack }} - {{ enemyMaxAttack }}</p>
+
+      <!-- HEALTH BAR -->
       <div class="progress">
-        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
+        <div class="progress-bar {{ progressBar(prstHealth(enemyHealth, enemyCurrentHealth)) }}" role="progressbar" aria-valuenow="40"
              aria-valuemin="0" aria-valuemax="100" [style.width.%]="prstHealth(enemyHealth, enemyCurrentHealth)">
-          <span class="progress-text">{{ prstHealth(enemyHealth, enemyCurrentHealth) }}%</span>
+          <!--<span class="progress-text">{{ prstHealth(enemyHealth, enemyCurrentHealth) }}%</span>-->
+          <span class="progress-text">{{ enemyCurrentHealth }} / {{ enemyHealth }}</span>
         </div>
       </div>
+      <!-- END - HEALTH BAR -->
+
+      <p>Attack:  <b>{{ enemyMinAttack }} - {{ enemyMaxAttack }}</b></p>
+      <p>Crit:    <b>{{ enemyCrit }}%</b></p>
+
     </div>
   </div>
 </div>

@@ -7,18 +7,27 @@
 
       <!-- HEALTH BAR -->
       <div class="progress">
-        <div class="progress-bar {{ progressBar(prstHealth(friendlyHealth, friendlyCurrentHealth)) }}" role="progressbar" aria-valuenow="40"
-             aria-valuemin="0" aria-valuemax="100" [style.width.%]="prstHealth(friendlyHealth, friendlyCurrentHealth)">
-          <!--<span class="progress-text">{{ prstHealth(friendlyHealth, friendlyCurrentHealth) }}%</span>-->
-          <span class="progress-text">{{ friendlyCurrentHealth }} / {{ friendlyHealth }}</span>
+        <div class="progress-bar {{ progressBar(prstHealth(player1.health, player1.currentHealth)) }}" role="progressbar" aria-valuenow="40"
+             aria-valuemin="0" aria-valuemax="100" [style.width.%]="prstHealth(player1.health, player1.currentHealth)">
+          <!--<span class="progress-text">{{ prstHealth(player1.health, player1.currentHealth) }}%</span>-->
+          <span class="progress-text">{{ player1.currentHealth }} / {{ player1.health }}</span>
         </div>
       </div>
       <!-- END - HEALTH BAR -->
-      <p>Attack:  <b>{{ friendlyMinAttack }} - {{ friendlyMaxAttack }}</b></p>
-      <p>Crit:    <b>{{ friendlyCrit }}%</b></p>
-      <p>Armor:   <b>{{ friendlyArmor }}</b></p>
-      <p>Block:   <b>{{ friendlyBlock }}</b></p>
-      <p>Block Chance: <b>{{ friendlyBlockChance }}</b></p>
+      <p>Attack:  <b>{{ player1.minAttack }} - {{ player1.maxAttack }}</b></p>
+      <p>Crit:    <b>{{ player1.criticalStrike }}%</b></p>
+      <p>Armor:   <b>{{ player1.armor }}</b></p>
+      <p>Block:   <b>{{ player1.block }}</b></p>
+      <p>Block Chance: <b>{{ player1.blockChance }}</b></p>
+      <hr>
+      <!--<p>{{ displayItem[0].name }}</p>-->
+      <p><b>{{ getItem(itemSelected)[0].name }}</b></p>
+      <p>Damage: {{ getItem(itemSelected)[0].minAttack }} - {{ getItem(itemSelected)[0].maxAttack }}</p>
+      <p>Crit Bonus: {{ getItem(itemSelected)[0].criticalStrike }}</p>
+      <label for="player1-weapons-list">Weapon:</label>
+      <select id="player1-weapons-list" class="form-control" [(ngModel)]="itemSelected">
+        <option *ngFor="let item of items" [value]="item.name" [selected]="item.name == 'Sword'">{{ item.name }}</option>
+      </select>
     </div>
 
     <!-- Center -->
@@ -26,12 +35,17 @@
       <button class="btn btn-primary col-md-12" (click)="onFight()">Fight</button>
       <p style="height: 50px">{{ status }}</p>
       <button class="btn bg-info col-md-12" (click)="resetStats()">Reset</button>
+      <!--<div class="row">-->
+        <!--<div class="col-md-6">-->
+          <!--<p *ngFor="let log of friendlyCombatLog">Friendly hits Enemy for <span style="color: blue;">{{ log }}</span></p>-->
+        <!--</div>-->
+        <!--<div class="col-md-6">-->
+          <!--<p *ngFor="let log of enemyCombatLog">Enemy hits Friendly for <span style="color: red;">{{ log }}</span></p>-->
+        <!--</div>-->
+      <!--</div>-->
       <div class="row">
-        <div class="col-md-6">
-          <p *ngFor="let log of friendlyCombatLog">Friendly hits Enemy for <span style="color: blue;">{{ log }}</span></p>
-        </div>
-        <div class="col-md-6">
-          <p *ngFor="let log of enemyCombatLog">Enemy hits Friendly for <span style="color: red;">{{ log }}</span></p>
+        <div class="col-md-12">
+          <p *ngFor="let log of chatlog">{{ log }}</p>
         </div>
       </div>
     </div>
@@ -42,19 +56,19 @@
 
       <!-- HEALTH BAR -->
       <div class="progress">
-        <div class="progress-bar {{ progressBar(prstHealth(enemyHealth, enemyCurrentHealth)) }}" role="progressbar" aria-valuenow="40"
-             aria-valuemin="0" aria-valuemax="100" [style.width.%]="prstHealth(enemyHealth, enemyCurrentHealth)">
-          <!--<span class="progress-text">{{ prstHealth(enemyHealth, enemyCurrentHealth) }}%</span>-->
-          <span class="progress-text">{{ enemyCurrentHealth }} / {{ enemyHealth }}</span>
+        <div class="progress-bar {{ progressBar(prstHealth(player2.health, player2.currentHealth)) }}" role="progressbar" aria-valuenow="40"
+             aria-valuemin="0" aria-valuemax="100" [style.width.%]="prstHealth(player2.health, player2.currentHealth)">
+          <!--<span class="progress-text">{{ prstHealth(player2.health, player2.currentHealth) }}%</span>-->
+          <span class="progress-text">{{ player2.currentHealth }} / {{ player2.health }}</span>
         </div>
       </div>
       <!-- END - HEALTH BAR -->
 
-      <p>Attack:  <b>{{ enemyMinAttack }} - {{ enemyMaxAttack }}</b></p>
-      <p>Crit:    <b>{{ enemyCrit }}%</b></p>
-      <p>Armor:   <b>{{ enemyArmor }}</b></p>
-      <p>Block:   <b>{{ enemyBlock }}</b></p>
-      <p>Block Chance: <b>{{ enemyBlockChance }}</b></p>
+      <p>Attack:  <b>{{ player2.minAttack }} - {{ player2.maxAttack }}</b></p>
+      <p>Crit:    <b>{{ player2.criticalStrike }}%</b></p>
+      <p>Armor:   <b>{{ player2.armor }}</b></p>
+      <p>Block:   <b>{{ player2.block }}</b></p>
+      <p>Block Chance: <b>{{ player2.blockChance }}</b></p>
     </div>
   </div>
 </div>

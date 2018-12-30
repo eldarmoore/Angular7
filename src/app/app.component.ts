@@ -1,44 +1,59 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {CharacterModel} from './models/character.model';
+import {ChatlogModel} from './models/chatlog.model';
+import {Items} from './services/items.service';
+import {Item} from './models/item.model';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  friendlyMaxAttack = 134;
-  friendlyMinAttack = 126;
-  friendlyCrit = 80;
-  friendlyHealth = 3000;
-  friendlyCurrentHealth = 3000;
-  friendlyArmor = 686;
-  friendlyBlockChance = 90;
-  friendlyBlock = 96;
-  friendlyHealthPercentage: number;
-  friendlyCritMultiplier = 5;
-  friendlyFilteredAttack: number;
-  enemyMaxAttack = 156;
-  enemyMinAttack = 138;
-  enemyCrit = 10;
-  enemyHealth = 30000;
-  enemyCurrentHealth = 30000;
-  enemyArmor = 96;
-  enemyBlockChance = 10;
-  enemyBlock = 30;
-  enemyHealthPercentage: number;
-  enemyCritMultiplier = 5;
-  enemyFilteredAttack: number;
+export class AppComponent implements OnInit {
+  public player1FilteredAttack: number;
+  public player2FilteredAttack: number;
+  public player1: CharacterModel = new CharacterModel('Friendly', 2, 1, 0, 200, 200, 0, 0, 0, 4);
+  public player2: CharacterModel = new CharacterModel('Enemy', 2, 1, 0, 200, 200, 0, 0, 0, 4);
   status: string;
+  public player1Crit: boolean;
+  public player2Crit: boolean;
   friendlyCombatLog = [];
   enemyCombatLog = [];
-  combatLog: number[][] = new Array<number[]>();
+  public chatlog = [];
+  public itemSelected: string;
+  displayItem: Item[];
+  items: Item[] = new Items().items;
+
+  constructor() {
+    console.log(this.items);
+    this.itemSelected = 'Sword';
+  }
+
+  ngOnInit() {
+  }
 
   resetStats() {
-    this.friendlyCurrentHealth = this.friendlyHealth;
-    this.enemyCurrentHealth = this.enemyHealth;
-    this.friendlyCombatLog = [];
-    this.enemyCombatLog = [];
+    this.player1.currentHealth = this.player1.health;
+    this.player2.currentHealth = this.player2.health;
+    this.chatlog = [];
     this.status = '';
+  }
+
+  getItem(name) {
+    const obj: Item[] = this.items.filter(function(node) {
+      return node.name === name;
+    });
+    return obj;
+    // this.displayItem = obj;
+  }
+
+
+  public playerCritTest(crit) {
+    if (crit === true) {
+      return '*critically hit*';
+    } else {
+      return 'hit';
+    }
   }
 
   public prstHealth(health, currentHealth) {
@@ -84,41 +99,65 @@ export class AppComponent {
   }
 
   onFight() {
-    if (this.friendlyCurrentHealth && this.enemyCurrentHealth > 0) {
+    if (this.player1.currentHealth && this.player2.currentHealth > 0) {
 
       // Generate random number between min - max
       // Math.floor(Math.random() * (max - min + 1)) + min
-      let friendlyAttack = Math.floor(Math.random() * (this.friendlyMaxAttack - this.friendlyMinAttack + 1)) + this.friendlyMinAttack;
+      const friendlyAttackBasic = Math.floor(Math.random() * (this.player1.maxAttack - this.player1.minAttack + 1)) + this.player1.minAttack;
 
       // Critical strike chance
-      friendlyAttack = this.critChance(this.friendlyCrit, friendlyAttack, this.friendlyCritMultiplier);
-      this.friendlyFilteredAttack = this.blockChance(this.enemyBlockChance, this.armorMitigation(friendlyAttack, this.enemyArmor), this.enemyBlock);
-      console.log('Friendly Attack: ' + friendlyAttack + ' after mitigation ' + this.friendlyFilteredAttack);
-      if (this.enemyCurrentHealth - this.friendlyFilteredAttack > 0) {
-        this.enemyCurrentHealth -= this.friendlyFilteredAttack;
-        this.friendlyCombatLog.push(this.friendlyFilteredAttack);
+      const friendlyAttack = this.critChance(this.player1.criticalStrike, friendlyAttackBasic, this.player1.critMultiplier);
+
+      if (friendlyAttack !== friendlyAttackBasic) {
+        this.player1Crit = true;
       } else {
-        this.enemyCurrentHealth = 0;
-        this.friendlyCombatLog.push(this.friendlyFilteredAttack);
-        this.status = 'Friendly player has WON!';
+        this.player1Crit = false;
+      }
+
+      if (friendlyAttack >= 0) {
+        this.player1FilteredAttack = this.blockChance(this.player2.blockChance, this.armorMitigation(friendlyAttack, this.player2.armor), this.player2.block);
+        if (this.player2.currentHealth - this.player1FilteredAttack > 0) {
+          this.player2.currentHealth -= this.player1FilteredAttack;
+          this.friendlyCombatLog.push(this.player1FilteredAttack);
+        } else {
+          this.player2.currentHealth = 0;
+          this.friendlyCombatLog.push(this.player1FilteredAttack);
+          this.status = 'Friendly player has WON!';
+        }
+      } else {
+        console.log('Player1 attack is null');
       }
 
       // Generate random number between min - max
       // Math.floor(Math.random() * (max - min + 1)) + min
-      let enemyAttack = Math.floor(Math.random() * (this.enemyMaxAttack - this.enemyMinAttack + 1)) + this.enemyMinAttack;
+      const enemyAttackBasic = Math.floor(Math.random() * (this.player2.maxAttack - this.player2.minAttack + 1)) + this.player2.minAttack;
 
       // Critical strike chance
-      enemyAttack = this.critChance(this.enemyCrit, enemyAttack, this.enemyCritMultiplier);
-      this.enemyFilteredAttack = this.blockChance(this.friendlyBlockChance, this.armorMitigation(enemyAttack, this.friendlyArmor), this.friendlyBlock);
-      console.log('Enemy Attack: ' + enemyAttack + ' after mitigation ' + this.enemyFilteredAttack);
-      if (this.friendlyCurrentHealth - this.enemyFilteredAttack > 0) {
-        this.friendlyCurrentHealth -= this.enemyFilteredAttack;
-        this.enemyCombatLog.push(this.enemyFilteredAttack);
+      const enemyAttack = this.critChance(this.player2.criticalStrike, enemyAttackBasic, this.player2.critMultiplier);
+      if (enemyAttack !== enemyAttackBasic) {
+        this.player2Crit = true;
+        console.log(enemyAttackBasic);
+        console.log(enemyAttack);
+        console.log(this.player2Crit);
       } else {
-        this.friendlyCurrentHealth = 0;
-        this.enemyCombatLog.push(this.enemyFilteredAttack);
-        this.status = 'Enemy player has WON!';
+        this.player2Crit = false;
       }
+      if (enemyAttack >= 0) {
+        this.player2FilteredAttack = this.blockChance(this.player1.blockChance, this.armorMitigation(enemyAttack, this.player1.armor), this.player1.armor);
+        if (this.player1.currentHealth - this.player2FilteredAttack > 0) {
+          this.player1.currentHealth -= this.player2FilteredAttack;
+          this.enemyCombatLog.push(this.player2FilteredAttack);
+        } else {
+          this.player1.currentHealth = 0;
+          this.enemyCombatLog.push(this.player2FilteredAttack);
+          this.status = 'Enemy player has WON!';
+        }
+      } else {
+        console.log('Player2 attack is null');
+      }
+
+      const log = 'You ' + this.playerCritTest(this.player1Crit) + ' your target for ' + this.player1FilteredAttack.toString() + ' damage and get ' + this.playerCritTest(this.player2Crit) + ' by ' + this.player2FilteredAttack.toString();
+      this.chatlog.push(log);
     }
   }
 }

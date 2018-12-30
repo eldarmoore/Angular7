@@ -6,27 +6,27 @@ import {Component} from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  friendlyMaxAttack = 24;
-  friendlyMinAttack = 16;
-  friendlyCrit = 10;
-  friendlyHealth = 300;
-  friendlyArmor = 286;
-  friendlyBlockChance = 33;
+  friendlyMaxAttack = 134;
+  friendlyMinAttack = 126;
+  friendlyCrit = 80;
+  friendlyHealth = 3000;
+  friendlyCurrentHealth = 3000;
+  friendlyArmor = 686;
+  friendlyBlockChance = 90;
   friendlyBlock = 96;
-  friendlyCurrentHealth: number;
   friendlyHealthPercentage: number;
-  friendlyCritMultiplier = 4;
+  friendlyCritMultiplier = 5;
   friendlyFilteredAttack: number;
-  enemyMaxAttack = 14;
-  enemyMinAttack = 8;
+  enemyMaxAttack = 156;
+  enemyMinAttack = 138;
   enemyCrit = 10;
-  enemyHealth = 300;
+  enemyHealth = 30000;
+  enemyCurrentHealth = 30000;
   enemyArmor = 96;
   enemyBlockChance = 10;
   enemyBlock = 30;
-  enemyCurrentHealth: number;
   enemyHealthPercentage: number;
-  enemyCritMultiplier = 4;
+  enemyCritMultiplier = 5;
   enemyFilteredAttack: number;
   status: string;
   friendlyCombatLog = [];
@@ -92,9 +92,9 @@ export class AppComponent {
 
       // Critical strike chance
       friendlyAttack = this.critChance(this.friendlyCrit, friendlyAttack, this.friendlyCritMultiplier);
-      if (this.enemyCurrentHealth - friendlyAttack > 0) {
-        this.friendlyFilteredAttack = this.blockChance(this.enemyBlockChance, this.armorMitigation(friendlyAttack, this.enemyArmor), this.enemyBlock);
-        console.log('Friendly Attack: ' + friendlyAttack + ' after mitigation ' + this.friendlyFilteredAttack);
+      this.friendlyFilteredAttack = this.blockChance(this.enemyBlockChance, this.armorMitigation(friendlyAttack, this.enemyArmor), this.enemyBlock);
+      console.log('Friendly Attack: ' + friendlyAttack + ' after mitigation ' + this.friendlyFilteredAttack);
+      if (this.enemyCurrentHealth - this.friendlyFilteredAttack > 0) {
         this.enemyCurrentHealth -= this.friendlyFilteredAttack;
         this.friendlyCombatLog.push(this.friendlyFilteredAttack);
       } else {
@@ -109,9 +109,9 @@ export class AppComponent {
 
       // Critical strike chance
       enemyAttack = this.critChance(this.enemyCrit, enemyAttack, this.enemyCritMultiplier);
-      if (this.friendlyCurrentHealth - enemyAttack > 0) {
-        this.enemyFilteredAttack = this.blockChance(this.friendlyBlockChance, this.armorMitigation(enemyAttack, this.friendlyArmor), this.friendlyBlock);
-        console.log('Enemy Attack: ' + enemyAttack + ' after mitigation ' + this.enemyFilteredAttack);
+      this.enemyFilteredAttack = this.blockChance(this.friendlyBlockChance, this.armorMitigation(enemyAttack, this.friendlyArmor), this.friendlyBlock);
+      console.log('Enemy Attack: ' + enemyAttack + ' after mitigation ' + this.enemyFilteredAttack);
+      if (this.friendlyCurrentHealth - this.enemyFilteredAttack > 0) {
         this.friendlyCurrentHealth -= this.enemyFilteredAttack;
         this.enemyCombatLog.push(this.enemyFilteredAttack);
       } else {

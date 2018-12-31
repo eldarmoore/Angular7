@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {CharacterModel} from './models/character.model';
-import {ChatlogModel} from './models/chatlog.model';
 import {Items} from './services/items.service';
 import {Item} from './models/item.model';
 
@@ -10,23 +9,24 @@ import {Item} from './models/item.model';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  public weaponSelected: string;
+  public armorSelected: string;
   public player1FilteredAttack: number;
   public player2FilteredAttack: number;
   public player1: CharacterModel = new CharacterModel('Friendly', 2, 1, 0, 200, 200, 0, 0, 0, 4);
   public player2: CharacterModel = new CharacterModel('Enemy', 2, 1, 0, 200, 200, 0, 0, 0, 4);
-  status: string;
+  public status: string;
   public player1Crit: boolean;
   public player2Crit: boolean;
   friendlyCombatLog = [];
   enemyCombatLog = [];
   public chatlog = [];
-  public itemSelected: string;
   displayItem: Item[];
   items: Item[] = new Items().items;
 
   constructor() {
-    console.log(this.items);
-    this.itemSelected = 'Sword';
+    this.weaponSelected = 'Sword';
+    console.log();
   }
 
   ngOnInit() {
@@ -99,14 +99,15 @@ export class AppComponent implements OnInit {
   }
 
   onFight() {
+
     if (this.player1.currentHealth && this.player2.currentHealth > 0) {
 
       // Generate random number between min - max
       // Math.floor(Math.random() * (max - min + 1)) + min
-      const friendlyAttackBasic = Math.floor(Math.random() * (this.player1.maxAttack - this.player1.minAttack + 1)) + this.player1.minAttack;
+      const friendlyAttackBasic = Math.floor(Math.random() * ((this.player1.maxAttack + this.getItem(this.weaponSelected)[0].maxAttack) - (this.player1.minAttack + this.getItem(this.weaponSelected)[0].minAttack) + 1)) + (this.player1.minAttack + this.getItem(this.weaponSelected)[0].minAttack);
 
       // Critical strike chance
-      const friendlyAttack = this.critChance(this.player1.criticalStrike, friendlyAttackBasic, this.player1.critMultiplier);
+      const friendlyAttack = this.critChance((this.player1.criticalStrike + this.getItem(this.weaponSelected)[0].criticalStrike), friendlyAttackBasic, this.player1.critMultiplier);
 
       if (friendlyAttack !== friendlyAttackBasic) {
         this.player1Crit = true;
@@ -156,7 +157,7 @@ export class AppComponent implements OnInit {
         console.log('Player2 attack is null');
       }
 
-      const log = 'You ' + this.playerCritTest(this.player1Crit) + ' your target for ' + this.player1FilteredAttack.toString() + ' damage and get ' + this.playerCritTest(this.player2Crit) + ' by ' + this.player2FilteredAttack.toString();
+      const log = 'You ' + this.playerCritTest(this.player1Crit) + ' your target for ' + this.player1FilteredAttack.toString() + ' damage and get ' + this.playerCritTest(this.player2Crit) + ' by ' + this.player2FilteredAttack.toString() + ' damage.';
       this.chatlog.push(log);
     }
   }

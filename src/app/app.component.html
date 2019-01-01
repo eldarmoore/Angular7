@@ -7,14 +7,15 @@
 
       <!-- HEALTH BAR -->
       <div class="progress">
-        <div class="progress-bar {{ progressBar(prstHealth(player1.health, player1.currentHealth)) }}" role="progressbar" aria-valuenow="40"
-             aria-valuemin="0" aria-valuemax="100" [style.width.%]="prstHealth(player1.health, player1.currentHealth)">
-          <span class="progress-text">{{ player1.currentHealth }} / {{ player1.health }}</span>
+        <div class="progress-bar {{ progressBar(prstHealth(player1_health, player1_currentHealth)) }}" role="progressbar" aria-valuenow="40"
+             aria-valuemin="0" aria-valuemax="100" [style.width.%]="prstHealth(player1_health, player1_currentHealth)">
+          <span class="progress-text">{{ player1_currentHealth }} / {{ player1_health }}</span>
         </div>
       </div>
       <!-- END - HEALTH BAR -->
-      <p>Attack:  <b>{{ player1.minAttack + getItem(weaponSelected)[0].minAttack }} - {{ player1.maxAttack + getItem(weaponSelected)[0].maxAttack }}</b></p>
-      <p>Crit:    <b>{{ player1.criticalStrike + getItem(weaponSelected)[0].criticalStrike }}%</b></p>
+
+      <p>Attack:  <b>{{ player1_minAttack + getItem(weaponSelected)[0].minAttack }} - {{ player1_maxAttack + getItem(weaponSelected)[0].maxAttack }}</b></p>
+      <p>Crit:    <b>{{ player1_criticalStrike + getItem(weaponSelected)[0].criticalStrike }}%</b></p>
       <p>Armor:   <b>{{ player1.armor }}</b></p>
       <p>Block:   <b>{{ player1.block }}</b></p>
       <p>Block Chance: <b>{{ player1.blockChance }}</b></p>
@@ -48,7 +49,7 @@
       <!--</div>-->
       <div class="row">
         <div class="col-md-12">
-          <p *ngFor="let log of chatlog">{{ log }}</p>
+          <p *ngFor="let log of combatlog">{{ log }}</p>
         </div>
       </div>
     </div>

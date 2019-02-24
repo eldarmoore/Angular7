@@ -1,4 +1,4 @@
-export class Item {
+export class Weapon {
 
   constructor(
     public name: string,

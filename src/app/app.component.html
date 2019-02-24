@@ -1,36 +1,28 @@
 <div class="container">
   <div class="row">
 
-    <!-- Friendly Player Stats -->
+    <!-- Player 1 Player Stats -->
     <div class="col-md-3" style="background-color: #E3EBFD; height: 500px">
-      <h2>Power A</h2>
+      <h2>{{player1.name}}</h2>
 
       <!-- HEALTH BAR -->
       <div class="progress">
-        <div class="progress-bar {{ progressBar(prstHealth(player1_health, player1_currentHealth)) }}" role="progressbar" aria-valuenow="40"
-             aria-valuemin="0" aria-valuemax="100" [style.width.%]="prstHealth(player1_health, player1_currentHealth)">
-          <span class="progress-text">{{ player1_currentHealth }} / {{ player1_health }}</span>
+        <div class="progress-bar {{ progressBar(prstHealth(player1.health, player1.currentHealth)) }}" role="progressbar" aria-valuenow="40"
+             aria-valuemin="0" aria-valuemax="100" [style.width.%]="prstHealth(player1.health, player1.currentHealth)">
+          <span class="progress-text">{{ player1.currentHealth }} / {{ player1.health }}</span>
         </div>
       </div>
       <!-- END - HEALTH BAR -->
 
-      <p>Attack:  <b>{{ player1_minAttack + getItem(weaponSelected)[0].minAttack }} - {{ player1_maxAttack + getItem(weaponSelected)[0].maxAttack }}</b></p>
-      <p>Crit:    <b>{{ player1_criticalStrike + getItem(weaponSelected)[0].criticalStrike }}%</b></p>
+      <p>Attack:  <b>{{ player1.minAttack }} - {{ player1.maxAttack }}</b></p>
+      <p>Crit:    <b>{{ player1.criticalStrikeChance }}%</b></p>
       <p>Armor:   <b>{{ player1.armor }}</b></p>
       <p>Block:   <b>{{ player1.block }}</b></p>
       <p>Block Chance: <b>{{ player1.blockChance }}</b></p>
       <hr>
-      <!--<p>{{ displayItem[0].name }}</p>-->
-      <p><b>{{ getItem(weaponSelected)[0].name }}</b></p>
-      <p>Damage: {{ getItem(weaponSelected)[0].minAttack }} - {{ getItem(weaponSelected)[0].maxAttack }}</p>
-      <p>Crit Bonus: {{ getItem(weaponSelected)[0].criticalStrike }}</p>
       <label for="player1-weapons-list">Weapon:</label>
-      <select id="player1-weapons-list" class="form-control" [(ngModel)]="weaponSelected">
-        <option *ngFor="let weapon of items" [value]="weapon.name" [selected]="weapon.name == 'Sword'">{{ weapon.name }}</option>
-      </select>
-      <label for="player1-armor-list">Armor:</label>
-      <select id="player1-armor-list" class="form-control" [(ngModel)]="armorSelected">
-        <!--<option *ngFor="let item of items" [value]="item.name" [selected]="item.name == 'Sword'">{{ item.name }}</option>-->
+      <select id="player1-weapons-list" class="form-control">
+        <option *ngFor="let item of items.weapons" [value]="item.name" [selected]="item.name == 'Sword'">{{ item.name }}</option>
       </select>
     </div>
 
@@ -39,24 +31,16 @@
       <button class="btn btn-primary col-md-12" (click)="onFight()">Fight</button>
       <p style="height: 50px">{{ status }}</p>
       <button class="btn bg-info col-md-12" (click)="resetStats()">Reset</button>
-      <!--<div class="row">-->
-        <!--<div class="col-md-6">-->
-          <!--<p *ngFor="let log of friendlyCombatLog">Friendly hits Enemy for <span style="color: blue;">{{ log }}</span></p>-->
-        <!--</div>-->
-        <!--<div class="col-md-6">-->
-          <!--<p *ngFor="let log of enemyCombatLog">Enemy hits Friendly for <span style="color: red;">{{ log }}</span></p>-->
-        <!--</div>-->
-      <!--</div>-->
       <div class="row">
         <div class="col-md-12">
-          <p *ngFor="let log of combatlog">{{ log }}</p>
+          <p *ngFor="let log of combatlog" >{{ log }}</p>
         </div>
       </div>
     </div>
 
     <!-- Target Stats -->
     <div class="col-md-3" style="background-color: #E3EBFD; height: 500px">
-      <h2>Power B</h2>
+      <h2>{{ player2.name }}</h2>
 
       <!-- HEALTH BAR -->
       <div class="progress">
@@ -69,7 +53,7 @@
       <!-- END - HEALTH BAR -->
 
       <p>Attack:  <b>{{ player2.minAttack }} - {{ player2.maxAttack }}</b></p>
-      <p>Crit:    <b>{{ player2.criticalStrike }}%</b></p>
+      <p>Crit:    <b>{{ player2.criticalStrikeChance }}%</b></p>
       <p>Armor:   <b>{{ player2.armor }}</b></p>
       <p>Block:   <b>{{ player2.block }}</b></p>
       <p>Block Chance: <b>{{ player2.blockChance }}</b></p>
